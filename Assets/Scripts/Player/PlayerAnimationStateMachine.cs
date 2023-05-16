@@ -2,16 +2,21 @@ using UnityEngine;
 
 [RequireComponent(typeof(Animator))]
 [RequireComponent(typeof(CharacterController))]
+[RequireComponent(typeof(PlayerMoveController))]
+[RequireComponent(typeof(Health))]
 public class PlayerAnimationStateMachine : MonoBehaviour
 {
     private Animator _animator;
     private CharacterController _characterController;
     private string _currentState;
+    private Health _health;
 
     private void Start()
     {
         _animator = GetComponent<Animator>();
         _characterController = GetComponent<CharacterController>();
+        _health = GetComponent<Health>();
+
     }
 
     private void Update()
@@ -24,13 +29,25 @@ public class PlayerAnimationStateMachine : MonoBehaviour
             ChangeState("Walk");
             print(movementSpeed);
         }
-        else if (movementSpeed == 0f && _currentState != "Idle")
+        else if (movementSpeed == 0f && _currentState != "Idle" && !_health.Death)
         {
             ChangeState("Idle");
         }
         else if (movementSpeed > 4f && _currentState != "Run")
         {
             ChangeState("Run");
+        }
+        else if (Input.GetMouseButton(0) && _currentState != "AttackSword")
+        {
+            ChangeState("AttackSword");
+        }
+        else if (Input.GetKeyDown(KeyCode.Z) && _currentState != "Defend")
+        {
+            ChangeState("Defend");
+        }
+        else if (_health._Health <= 0)
+        {
+            ChangeState("Die");
         }
 
         //if (Input.GetKeyDown(KeyCode.Space))

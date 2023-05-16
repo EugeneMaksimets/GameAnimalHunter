@@ -10,27 +10,31 @@ public class PlayerMoveController : MonoBehaviour
     [SerializeField] private float _sprintSpeed;
 
     private float _jspeed;
+    private Vector3 _movementDirection;
     private CharacterController _characterController;
-    private PlayerAnimationStateMachine _playerAnimationStateMachine;
 
     private void Awake()
     {
         _characterController = GetComponent<CharacterController>();
-        _playerAnimationStateMachine = GetComponent<PlayerAnimationStateMachine>();
 
     }
 
     private void Update()
     {
         float speed = _speed;
-        float horizontal = 0f;
-        float vertical = 0f;
-        if(_characterController.isGrounded)
+        float horizontal = Input.GetAxis("Horizontal");
+        float vertical = Input.GetAxis("Vertical");
+
+        if (_characterController.isGrounded)
         {
-            horizontal = Input.GetAxis("Horizontal");
-            vertical = Input.GetAxis("Vertical");
             _jspeed = 0f;
-            if(Input.GetKey(KeyCode.Space))
+
+            if (horizontal != 0f || vertical != 0f)
+            {
+                _movementDirection = new Vector3(horizontal, 0f, vertical);
+            }
+
+            if (Input.GetKey(KeyCode.Space))
             {
                 _jspeed = _jumpForce;
             }
